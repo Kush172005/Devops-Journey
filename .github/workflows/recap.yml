@@ -29,7 +29,8 @@ jobs:
               uses: actions/checkout@v4
             - name: List Files
               run: ls -la
-
-
-            
-            
+    weather:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Get Weather
+              run: curl -s wttr.in
