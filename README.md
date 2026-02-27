@@ -53,4 +53,4 @@ cp .env.example .env
 
 ## GitHub Actions
 
-Workflows automatically test frontend build and backend server on push/PR.
+Workflows automatically test frontend build and backend server on push/PR. Frontend PRs must pass ESLint. Dependabot opens weekly PRs for dependency updates.
