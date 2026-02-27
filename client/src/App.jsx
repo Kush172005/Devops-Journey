@@ -10,22 +10,6 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [showCart, setShowCart] = useState(false);
 
-  useEffect(() => {
-    fetchProducts();
-    fetchCart();
-  }, []);
-
-  const fetchProducts = async () => {
-    try {
-      const response = await axios.get(`${API_URL}/api/products`);
-      setProducts(response.data);
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching products:', error);
-      setLoading(false);
-    }
-  };
-
   const fetchCart = async () => {
     try {
       const response = await axios.get(`${API_URL}/api/cart`);
@@ -34,6 +18,28 @@ function App() {
       console.error('Error fetching cart:', error);
     }
   };
+
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      try {
+        const [productsRes, cartRes] = await Promise.all([
+          axios.get(`${API_URL}/api/products`),
+          axios.get(`${API_URL}/api/cart`),
+        ]);
+        if (!cancelled) {
+          setProducts(productsRes.data);
+          setCart(cartRes.data);
+        }
+      } catch (error) {
+        if (!cancelled) console.error('Error loading data:', error);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+    load();
+    return () => { cancelled = true; };
+  }, []);
 
   const addToCart = async (product) => {
     try {
