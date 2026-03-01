@@ -29,16 +29,6 @@ jobs:
       working-directory: ./server
       run: npm ci
 
-    - name: Start server test
+    - name: Run tests
       working-directory: ./server
-      run: |
-        timeout 10 npm test || exit 0
-        echo "Server started successfully"
-
-    - name: Health check
-      working-directory: ./server
-      run: |
-        npm start &
-        sleep 5
-        curl -f http://localhost:3000/health || exit 1
-        echo "Health check passed"
+      run: npm test

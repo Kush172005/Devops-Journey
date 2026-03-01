@@ -5,12 +5,15 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "test": "node server.js"
+    "test": "node --test test/"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
+  "devDependencies": {
+    "supertest": "^7.0.0"
+  },
   "dependencies": {
     "cors": "^2.8.6",
     "dotenv": "^17.2.4",
