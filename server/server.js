@@ -1,4 +1,6 @@
 require('dotenv').config();
+const path = require('path');
+const fs = require('fs');
 const express = require('express');
 const cors = require('cors');
 
@@ -155,6 +157,15 @@ app.delete('/api/cart/:id', (req, res) => {
 app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
 });
+
+// Serve React build on EC2 (same origin: one port for API + frontend)
+if (process.env.NODE_ENV === 'production') {
+  const clientDist = path.join(__dirname, '../client/dist');
+  if (fs.existsSync(clientDist)) {
+    app.use(express.static(clientDist));
+    app.get('*', (req, res) => res.sendFile(path.join(clientDist, 'index.html')));
+  }
+}
 
 if (require.main === module) {
   app.listen(PORT, () => {
