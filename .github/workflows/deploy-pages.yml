@@ -41,3 +41,5 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./client/dist
+          # Replace gh-pages with only the built app (no README or other repo files)
+          force_orphan: true
