@@ -62,16 +62,20 @@ Workflows automatically test frontend build and backend server on push/PR. Front
 
 ### Option A: Frontend on GitHub Pages + Backend on Vercel (recommended)
 
+**Seeing the README instead of the app?** Pages is serving the wrong branch. Go to **Settings → Pages**, set **Source** to **Deploy from a branch**, **Branch** to **gh-pages**, **Folder** to **/ (root)**. Save. Then run **Actions → Deploy to GitHub Pages → Run workflow** once and reload your site.
+
+---
+
 1. **Deploy backend to Vercel**
    - Go to [vercel.com](https://vercel.com), sign in with GitHub, and import your repo.
    - Set **Root Directory** to `server` (so only the server folder is deployed).
    - Deploy. Note the URL (e.g. `https://your-project.vercel.app`).
 
 2. **Deploy frontend to GitHub Pages**
-   - In your repo: **Settings → Pages → Build and deployment**: set Source to **GitHub Actions**.
+   - In your repo: **Settings → Pages → Build and deployment**: set Source to **Deploy from a branch**. Branch: **gh-pages**, Folder: **/ (root)**. Save.
    - Add a repository secret: **Settings → Secrets and variables → Actions**: create `VITE_API_URL` with value = your Vercel backend URL (e.g. `https://your-project.vercel.app`).
-   - Push to `main` (or trigger the “Deploy to GitHub Pages” workflow). The workflow builds the client with that API URL and deploys to GitHub Pages.
-   - Your site will be at `https://<username>.github.io/<repo>/` (or your custom domain). The frontend will call the Vercel API automatically.
+   - Push to `main` (or run the “Deploy to GitHub Pages” workflow manually). The workflow builds the client and pushes to the `gh-pages` branch; Pages serves from there.
+   - Your site will be at `https://<username>.github.io/<repo>/`. The frontend will call the Vercel API automatically.
 
 ### Option B: Full app on EC2 (GitHub Actions → EC2)
 
