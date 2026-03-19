@@ -60,4 +60,29 @@ describe('API', () => {
       assert.strictEqual(res.body.quantity, 1);
     });
   });
+
+  describe('Integration: API flow (products → cart → cart)', () => {
+    it('get products, add to cart, get cart returns the item', async () => {
+      const productsRes = await request(app).get('/api/products');
+      assert.strictEqual(productsRes.status, 200);
+      assert(productsRes.body.length >= 1);
+      const product = productsRes.body[0];
+
+      const addRes = await request(app).post('/api/cart').send({
+        productId: product.id,
+        name: product.name,
+        price: product.price,
+        quantity: 2,
+      });
+      assert.strictEqual(addRes.status, 201);
+      assert.strictEqual(addRes.body.quantity, 2);
+
+      const cartRes = await request(app).get('/api/cart');
+      assert.strictEqual(cartRes.status, 200);
+      const added = cartRes.body.find((i) => i.id === addRes.body.id);
+      assert(added);
+      assert.strictEqual(added.quantity, 2);
+      assert.strictEqual(added.productId, product.id);
+    });
+  });
 });
