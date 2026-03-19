@@ -1,5 +1,3 @@
-# Full app deployment to EC2: build frontend + backend, copy to EC2, restart service (pm2)
-# Requires: EC2_SSH_KEY, EC2_HOST; optional: EC2_APP_URL (for frontend API URL), EC2_APP_PATH (default /home/ubuntu/app)
 name: Deploy App to EC2
 
 on:

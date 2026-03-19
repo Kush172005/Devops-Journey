@@ -1,6 +1,3 @@
-# Dependabot - auto-check for outdated dependencies
-# https://docs.github.com/en/code-security/dependabot
-
 version: 2
 updates:
   - package-ecosystem: "npm"

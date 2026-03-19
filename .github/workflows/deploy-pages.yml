@@ -1,5 +1,3 @@
-# Deploy frontend to GitHub Pages (pushes to gh-pages branch)
-# Repo Settings → Pages → Source: Deploy from a branch → Branch: gh-pages → / (root)
 name: Deploy to GitHub Pages
 
 on:
