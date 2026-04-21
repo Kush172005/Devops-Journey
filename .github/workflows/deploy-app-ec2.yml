@@ -2,7 +2,7 @@ name: Deploy App to EC2
 
 on:
   push:
-    branches: [main, master]
+    branches: [main]
     paths:
       - 'client/**'
       - 'server/**'
@@ -25,7 +25,6 @@ jobs:
       - name: Build client
         working-directory: ./client
         env:
-          # Public URL of your app on EC2 (e.g. http://ec2-xx.compute.amazonaws.com:3000) so frontend calls correct API
           VITE_API_URL: ${{ secrets.EC2_APP_URL }}
         run: |
           npm ci

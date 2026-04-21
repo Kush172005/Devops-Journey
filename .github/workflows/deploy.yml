@@ -1,0 +1,118 @@
+name: Deploy to AWS ECS
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "server/**"
+      - "terraform/**"
+      - "Dockerfile"
+      - ".github/workflows/deploy.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  APP_NAME: devops-lab-app
+  TF_VERSION: 1.9.8
+  TF_IN_AUTOMATION: "true"
+  TF_VAR_aws_region: ${{ secrets.AWS_REGION }}
+  TF_VAR_app_name: devops-lab-app
+  TF_VAR_subnet_id: ${{ secrets.AWS_SUBNET_ID }}
+  TF_VAR_security_group_id: ${{ secrets.AWS_SECURITY_GROUP_ID }}
+
+jobs:
+  deploy:
+    name: Build & Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Validate Required Secrets
+        run: |
+          test -n "${{ env.TF_VAR_subnet_id }}" || (echo "Missing secret: AWS_SUBNET_ID" && exit 1)
+          test -n "${{ env.TF_VAR_security_group_id }}" || (echo "Missing secret: AWS_SECURITY_GROUP_ID" && exit 1)
+          test -n "${{ env.AWS_REGION }}" || (echo "Missing secret: AWS_REGION" && exit 1)
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Ensure ECR Repository Exists
+        run: |
+          aws ecr describe-repositories --repository-names "${{ env.APP_NAME }}" --region "${{ env.AWS_REGION }}" >/dev/null 2>&1 || \
+          aws ecr create-repository --repository-name "${{ env.APP_NAME }}" --region "${{ env.AWS_REGION }}"
+
+      - name: Build, Tag & Push Docker Image to ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          IMAGE_URI=$ECR_REGISTRY/${{ env.APP_NAME }}:$IMAGE_TAG
+          LATEST_URI=$ECR_REGISTRY/${{ env.APP_NAME }}:latest
+          echo "Building Docker image..."
+          docker build -t "$IMAGE_URI" -t "$LATEST_URI" .
+          echo "Pushing image to ECR..."
+          docker push "$IMAGE_URI"
+          docker push "$LATEST_URI"
+          echo "image=$IMAGE_URI" >> "$GITHUB_OUTPUT"
+          echo "Docker image pushed: $IMAGE_URI"
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Terraform Version Check
+        run: terraform version
+
+      - name: Terraform Fmt Check
+        working-directory: terraform
+        run: terraform fmt -check -recursive
+
+      - name: Terraform Init
+        working-directory: terraform
+        run: |
+          terraform init -upgrade -input=false || (rm -rf .terraform .terraform.lock.hcl && terraform init -upgrade -input=false)
+
+      - name: Terraform Import Existing ECR
+        working-directory: terraform
+        run: |
+          terraform import -input=false aws_ecr_repository.app "${{ env.APP_NAME }}" || true
+
+      - name: Terraform Validate
+        working-directory: terraform
+        run: terraform validate
+
+      - name: Terraform Plan
+        working-directory: terraform
+        run: terraform plan -input=false -out=tfplan
+
+      - name: Terraform Apply
+        working-directory: terraform
+        run: terraform apply -input=false -auto-approve tfplan
+
+      - name: Deployment Summary
+        run: |
+          echo "============================================"
+          echo " DEPLOYMENT COMPLETE"
+          echo "============================================"
+          echo " App Name : ${{ env.APP_NAME }}"
+          echo " Region   : ${{ env.AWS_REGION }}"
+          echo " Image    : ${{ steps.build-image.outputs.image }}"
+          echo " Commit   : ${{ github.sha }}"
+          echo "============================================"
+          echo "ECS → Clusters → ${{ env.APP_NAME }}-cluster → Tasks → Public IP → http://<PUBLIC_IP>:80"
