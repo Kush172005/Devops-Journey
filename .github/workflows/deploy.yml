@@ -29,7 +29,7 @@ permissions:
 env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
   APP_NAME: devops-lab-app
-  APP_PORT: "3000"
+  APP_PORT: "80"
   TF_VERSION: 1.9.8
   TF_IN_AUTOMATION: "true"
   TF_STATE_BUCKET: ${{ secrets.TF_STATE_BUCKET }}
@@ -140,6 +140,8 @@ jobs:
       - name: Import existing resources (if already present)
         working-directory: terraform
         run: |
+          aws ecr describe-repositories --repository-names "${APP_NAME}" --region "${AWS_REGION}" >/dev/null 2>&1 || \
+          aws ecr create-repository --repository-name "${APP_NAME}" --region "${AWS_REGION}"
           terraform import -input=false aws_ecr_repository.app "${APP_NAME}" || true
           terraform import -input=false aws_ecs_cluster.app "${APP_NAME}-cluster" || true
           terraform import -input=false aws_ecs_service.app "${APP_NAME}-cluster/${APP_NAME}-service" || true

@@ -5,7 +5,7 @@ COPY server/package*.json ./
 RUN npm ci --omit=dev
 
 FROM node:20-alpine AS runner
-RUN apk add --no-cache wget \
+RUN apk add --no-cache wget libcap-utils \
   && addgroup -g 10001 -S app \
   && adduser -u 10001 -S app -G app
 
@@ -14,13 +14,15 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY server/ ./
 
 RUN chown -R app:app /app
+# Allow non-root user to bind to low ports like 80.
+RUN setcap 'cap_net_bind_service=+ep' /usr/local/bin/node
 
 USER app
 ENV NODE_ENV=production
-ENV PORT=3000
-EXPOSE 3000
+ENV PORT=80
+EXPOSE 80
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-  CMD wget -qO- http://127.0.0.1:3000/health || exit 1
+  CMD wget -qO- http://127.0.0.1:80/health || exit 1
 
 CMD ["node", "server.js"]

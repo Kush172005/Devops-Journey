@@ -13,7 +13,7 @@ variable "app_name" {
 variable "container_port" {
   description = "Port the container listens on"
   type        = number
-  default     = 3000
+  default     = 80
 }
 
 variable "subnet_id" {
