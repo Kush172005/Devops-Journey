@@ -2,6 +2,8 @@ node_modules
 dist
 .env
 *.log
+server/test-reports/
+client/test-reports/
 .terraform/
 terraform/.terraform/
 terraform/*.tfstate
