@@ -49,7 +49,7 @@ variable "task_memory" {
 }
 
 variable "desired_count" {
-  description = "Number of ECS tasks to run"
+  description = "ECS tasks (0 until CI pushes image, then workflow sets desired count to 1)"
   type        = number
-  default     = 1
+  default     = 0
 }

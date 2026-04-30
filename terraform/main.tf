@@ -2,10 +2,16 @@
 terraform {
   required_version = ">= 1.5.0"
 
+  backend "s3" {}
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"
       version = "~> 5.0"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.6"
     }
   }
 }
@@ -18,6 +24,45 @@ data "aws_caller_identity" "current" {}
 
 locals {
   lab_role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/LabRole"
+}
+
+resource "random_id" "bucket_suffix" {
+  byte_length = 3
+}
+
+# Rubric: S3 with unique name, versioning, encryption, public access blocked.
+resource "aws_s3_bucket" "reports" {
+  bucket = "${var.app_name}-data-${random_id.bucket_suffix.hex}"
+
+  tags = {
+    Name        = "${var.app_name}-reports"
+    Environment = "lab"
+  }
+}
+
+resource "aws_s3_bucket_versioning" "reports" {
+  bucket = aws_s3_bucket.reports.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "reports" {
+  bucket = aws_s3_bucket.reports.id
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "reports" {
+  bucket = aws_s3_bucket.reports.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 }
 
 resource "aws_ecr_repository" "app" {
@@ -114,6 +159,11 @@ resource "aws_ecs_service" "app" {
     Name        = "${var.app_name}-service"
     Environment = "lab"
   }
+}
+
+output "reports_bucket_name" {
+  description = "S3 bucket for CI test reports (versioned, encrypted, private)"
+  value       = aws_s3_bucket.reports.bucket
 }
 
 output "ecr_repository_url" {
