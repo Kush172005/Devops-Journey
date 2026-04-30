@@ -11,9 +11,9 @@ variable "app_name" {
 }
 
 variable "container_port" {
-  description = "Port the container listens on (lab SG usually allows 80)"
+  description = "Port the container listens on"
   type        = number
-  default     = 80
+  default     = 3000
 }
 
 variable "subnet_id" {

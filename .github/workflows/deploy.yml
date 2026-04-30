@@ -29,6 +29,7 @@ permissions:
 env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
   APP_NAME: devops-lab-app
+  APP_PORT: "3000"
   TF_VERSION: 1.9.8
   TF_IN_AUTOMATION: "true"
   TF_STATE_BUCKET: ${{ secrets.TF_STATE_BUCKET }}
@@ -244,6 +245,6 @@ jobs:
           test -n "$ENI" || (echo "No ENI" && exit 1)
           PUBLIC_IP=$(aws ec2 describe-network-interfaces --network-interface-ids "$ENI" --region "${{ env.AWS_REGION }}" --query 'NetworkInterfaces[0].Association.PublicIp' --output text)
           test -n "$PUBLIC_IP" && test "$PUBLIC_IP" != "None" || (echo "No public IP" && exit 1)
-          echo "Checking http://${PUBLIC_IP}:80/health"
-          curl -fsS --retry 10 --retry-delay 5 "http://${PUBLIC_IP}:80/health"
+          echo "Checking http://${PUBLIC_IP}:${APP_PORT}/health"
+          curl -fsS --retry 10 --retry-delay 5 "http://${PUBLIC_IP}:${APP_PORT}/health"
           echo "OK — service responding"
