@@ -136,6 +136,13 @@ jobs:
         working-directory: terraform
         run: terraform validate
 
+      - name: Import existing resources (if already present)
+        working-directory: terraform
+        run: |
+          terraform import -input=false aws_ecr_repository.app "${APP_NAME}" || true
+          terraform import -input=false aws_ecs_cluster.app "${APP_NAME}-cluster" || true
+          terraform import -input=false aws_ecs_service.app "${APP_NAME}-cluster/${APP_NAME}-service" || true
+
       - name: Terraform plan
         working-directory: terraform
         run: terraform plan -input=false -out=tfplan
