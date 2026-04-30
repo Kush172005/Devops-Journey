@@ -8,6 +8,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "test": "vitest run",
+    "test:ci": "mkdir -p test-reports && vitest run --reporter=junit --outputFile=test-reports/junit-client.xml",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "preview": "vite preview"
