@@ -11,9 +11,9 @@ variable "app_name" {
 }
 
 variable "container_port" {
-  description = "Port the container listens on"
+  description = "Port the container listens on (non-root: use 3000; ALB listens on 80 and forwards here)"
   type        = number
-  default     = 80
+  default     = 3000
 }
 
 variable "subnet_id" {

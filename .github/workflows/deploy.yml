@@ -29,7 +29,6 @@ permissions:
 env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
   APP_NAME: devops-lab-app
-  APP_PORT: "80"
   TF_VERSION: 1.9.8
   TF_IN_AUTOMATION: "true"
   TF_STATE_BUCKET: ${{ secrets.TF_STATE_BUCKET }}
@@ -233,6 +232,7 @@ jobs:
         env:
           CLUSTER: ${{ env.APP_NAME }}-cluster
           SERVICE: ${{ env.APP_NAME }}-service
+          AWS_MAX_ATTEMPTS: "120"
         run: |
           aws ecs update-service \
             --cluster "$CLUSTER" \
@@ -240,10 +240,26 @@ jobs:
             --desired-count 1 \
             --force-new-deployment \
             --region "${{ env.AWS_REGION }}"
-          aws ecs wait services-stable \
+          if ! aws ecs wait services-stable \
             --cluster "$CLUSTER" \
             --services "$SERVICE" \
-            --region "${{ env.AWS_REGION }}"
+            --region "${{ env.AWS_REGION }}"; then
+            echo "=== ECS service events (last 20) ==="
+            aws ecs describe-services \
+              --cluster "$CLUSTER" \
+              --services "$SERVICE" \
+              --region "${{ env.AWS_REGION }}" \
+              --query 'services[0].events[:20]' \
+              --output table
+            echo "=== Recent stopped tasks (explain exit) ==="
+            aws ecs list-tasks --cluster "$CLUSTER" --service-name "$SERVICE" --desired-status STOPPED --region "${{ env.AWS_REGION }}" --max-items 3 --query 'taskArns' --output text | tr '\t' '\n' | while read -r t; do
+              [ -z "$t" ] || [ "$t" = "None" ] && continue
+              aws ecs describe-tasks --cluster "$CLUSTER" --tasks "$t" --region "${{ env.AWS_REGION }}" \
+                --query 'tasks[0].{stoppedReason:stoppedReason,stopCode:stopCode,containers:containers[*].{name:name,reason:reason,exitCode:exitCode}}' \
+                --output json
+            done
+            exit 1
+          fi
 
       - name: Verify /health via Application Load Balancer
         env:

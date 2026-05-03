@@ -122,13 +122,15 @@ resource "aws_lb_target_group" "app" {
   vpc_id      = data.aws_subnet.ecs.vpc_id
   target_type = "ip"
 
+  deregistration_delay = 10
+
   health_check {
     enabled             = true
     path                = "/health"
     healthy_threshold   = 2
-    unhealthy_threshold = 3
+    unhealthy_threshold = 5
     timeout             = 5
-    interval            = 30
+    interval            = 15
     matcher             = "200"
   }
 
@@ -228,6 +230,11 @@ resource "aws_ecs_cluster" "app" {
   }
 }
 
+resource "aws_cloudwatch_log_group" "ecs_app" {
+  name              = "/ecs/${var.app_name}"
+  retention_in_days = 14
+}
+
 resource "aws_ecs_task_definition" "app" {
   family                   = "${var.app_name}-task"
   requires_compatibilities = ["FARGATE"]
@@ -250,6 +257,14 @@ resource "aws_ecs_task_definition" "app" {
           protocol      = "tcp"
         }
       ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = aws_cloudwatch_log_group.ecs_app.name
+          awslogs-region        = var.aws_region
+          awslogs-stream-prefix = "ecs"
+        }
+      }
     }
   ])
 
@@ -266,7 +281,15 @@ resource "aws_ecs_service" "app" {
   launch_type     = "FARGATE"
 
   force_new_deployment              = true
-  health_check_grace_period_seconds = 120
+  health_check_grace_period_seconds = 180
+
+  deployment_minimum_healthy_percent = 0
+  deployment_maximum_percent         = 200
+
+  deployment_circuit_breaker {
+    enable   = true
+    rollback = true
+  }
 
   load_balancer {
     target_group_arn = aws_lb_target_group.app.arn
