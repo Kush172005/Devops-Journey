@@ -187,11 +187,8 @@ jobs:
             terraform output -json || true
             exit 1
           fi
-          {
-            echo "alb_dns<<__ALB_EOF__"
-            printf '%s\n' "$DNS"
-            echo "__ALB_EOF__"
-          } >> "$GITHUB_OUTPUT"
+          # Single-line output so needs.terraform.outputs.alb_dns propagates (multiline breaks job outputs)
+          printf 'alb_dns=%s\n' "$DNS" >> "$GITHUB_OUTPUT"
           echo "Exported ALB DNS for job output (length ${#DNS})"
 
       - name: Download test reports
@@ -311,10 +308,22 @@ jobs:
             echo "Could not determine ALB DNS. Check: (1) full workflow run so Terraform export runs, or (2) IAM allows elasticloadbalancing:DescribeLoadBalancers, or (3) ALB exists with name starting ${APP_NAME}-alb-"
             exit 1
           fi
-          echo "Site URL: http://${ALB_DNS}/"
+          SITE_URL="http://${ALB_DNS}/"
+          echo "Site URL: ${SITE_URL}"
           for i in $(seq 1 36); do
             if curl -fsS --max-time 15 "http://${ALB_DNS}/health"; then
               echo "OK — ALB health check passed"
+              curl -fsS --max-time 15 -o /dev/null "http://${ALB_DNS}/" || echo "WARN: GET / did not return 200 (check app logs)"
+              {
+                echo "## Deployed site (ALB)"
+                echo ""
+                echo "Open this URL in your browser (**must use \`http://\` — port 80 only; HTTPS is not configured**):"
+                echo ""
+                echo "**${SITE_URL}**"
+                echo ""
+                echo "- Health: \`http://${ALB_DNS}/health\`"
+                echo "- If the browser shows an SSL or connection error, remove \`https://\` from the address bar or disable HTTPS-only mode for this host."
+              } >> "${GITHUB_STEP_SUMMARY}"
               exit 0
             fi
             echo "Waiting for targets healthy behind ALB... ($i/36)"
