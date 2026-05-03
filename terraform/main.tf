@@ -116,7 +116,9 @@ resource "aws_lb" "app" {
 }
 
 resource "aws_lb_target_group" "app" {
-  name        = substr("${var.app_name}-tg-${random_id.bucket_suffix.hex}", 0, 32)
+  # name_prefix (<=6 chars) + create_before_destroy lets Terraform replace TG
+  # (e.g. port change) without deleting the old TG while the ALB listener still points at it.
+  name_prefix = "dvlbtg"
   port        = var.container_port
   protocol    = "HTTP"
   vpc_id      = data.aws_subnet.ecs.vpc_id
@@ -136,6 +138,10 @@ resource "aws_lb_target_group" "app" {
 
   tags = {
     Name = "${var.app_name}-tg"
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 }
 

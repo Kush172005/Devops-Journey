@@ -140,14 +140,32 @@ jobs:
         working-directory: terraform
         run: terraform validate
 
-      - name: Import existing resources (if already present)
+      - name: Import existing AWS resources (only if missing from Terraform state)
         working-directory: terraform
         run: |
+          set +e
           aws ecr describe-repositories --repository-names "${APP_NAME}" --region "${AWS_REGION}" >/dev/null 2>&1 || \
           aws ecr create-repository --repository-name "${APP_NAME}" --region "${AWS_REGION}"
-          terraform import -input=false aws_ecr_repository.app "${APP_NAME}" || true
-          terraform import -input=false aws_ecs_cluster.app "${APP_NAME}-cluster" || true
-          terraform import -input=false aws_ecs_service.app "${APP_NAME}-cluster/${APP_NAME}-service" || true
+
+          import_if_absent() {
+            ADDR="$1"
+            ID="$2"
+            if terraform state show -no-color "$ADDR" >/dev/null 2>&1; then
+              echo "State already tracks $ADDR — skip import"
+            else
+              echo "Importing $ADDR ..."
+              terraform import -input=false "$ADDR" "$ID"
+              RC=$?
+              if [ "$RC" -ne 0 ]; then
+                echo "Import returned $RC (will rely on plan/apply if resource is new)"
+              fi
+            fi
+          }
+
+          import_if_absent "aws_ecr_repository.app" "${APP_NAME}"
+          import_if_absent "aws_ecs_cluster.app" "${APP_NAME}-cluster"
+          import_if_absent "aws_ecs_service.app" "${APP_NAME}-cluster/${APP_NAME}-service"
+          exit 0
 
       - name: Terraform plan
         working-directory: terraform
