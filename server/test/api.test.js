@@ -47,12 +47,14 @@ describe('API', () => {
     });
 
     it('creates cart item with valid data', async () => {
+      const p = await request(app).get('/api/products/1');
+      assert.strictEqual(p.status, 200);
       const res = await request(app)
         .post('/api/cart')
         .send({
-          productId: 1,
-          name: 'Test Product',
-          price: 10,
+          productId: p.body.id,
+          name: p.body.name,
+          price: p.body.price,
           quantity: 1,
         });
       assert.strictEqual(res.status, 201);

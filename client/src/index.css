@@ -1,5 +1,21 @@
 @import 'tailwindcss';
 
+:root {
+  --surface: #f8f6f3;
+  --surface-elevated: #ffffff;
+  --ink: #14121a;
+  --ink-muted: #5c5866;
+  --border: #e8e4de;
+  --accent: #c45c26;
+  --accent-hover: #a34d1f;
+  --accent-soft: rgba(196, 92, 38, 0.12);
+  --success: #1d6b4a;
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
+  --shadow-card: 0 1px 2px rgba(20, 18, 26, 0.04), 0 8px 24px rgba(20, 18, 26, 0.06);
+  --shadow-float: 0 12px 40px rgba(20, 18, 26, 0.12);
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -12,8 +28,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #faf8f5;
-  color: #292524;
+  background-color: var(--surface);
+  color: var(--ink);
 }
 
 #root {
@@ -22,6 +38,96 @@ body {
 
 button:focus-visible,
 a:focus-visible {
-  outline: 2px solid #0d9488;
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
+}
+
+/* Hero pipeline visual */
+@keyframes hero-pipeline-dash {
+  to {
+    stroke-dashoffset: -80;
+  }
+}
+
+@keyframes hero-orb-float {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translate(-6px, -10px) scale(1.08);
+    opacity: 0.85;
+  }
+}
+
+@keyframes hero-node-glow {
+  0%,
+  100% {
+    opacity: 0.72;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.hero-pipeline-dash {
+  animation: hero-pipeline-dash 2.8s linear infinite;
+}
+
+.hero-pipeline-dash-delay {
+  animation: hero-pipeline-dash 3.6s linear infinite reverse;
+}
+
+.hero-orb-a {
+  animation: hero-orb-float 7s ease-in-out infinite;
+}
+
+.hero-orb-b {
+  animation: hero-orb-float 9s ease-in-out infinite reverse;
+}
+
+.hero-node-1 {
+  animation: hero-node-glow 2.8s ease-in-out infinite;
+  animation-delay: 0s;
+}
+.hero-node-2 {
+  animation: hero-node-glow 2.8s ease-in-out infinite;
+  animation-delay: 0.35s;
+}
+.hero-node-3 {
+  animation: hero-node-glow 2.8s ease-in-out infinite;
+  animation-delay: 0.7s;
+}
+.hero-node-4 {
+  animation: hero-node-glow 2.8s ease-in-out infinite;
+  animation-delay: 1.05s;
+}
+.hero-node-5 {
+  animation: hero-node-glow 2.8s ease-in-out infinite;
+  animation-delay: 1.4s;
+}
+.hero-node-6 {
+  animation: hero-node-glow 2.8s ease-in-out infinite;
+  animation-delay: 1.75s;
+}
+.hero-node-7 {
+  animation: hero-node-glow 2.8s ease-in-out infinite;
+  animation-delay: 2.1s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-pipeline-dash,
+  .hero-pipeline-dash-delay,
+  .hero-orb-a,
+  .hero-orb-b,
+  .hero-node-1,
+  .hero-node-2,
+  .hero-node-3,
+  .hero-node-4,
+  .hero-node-5,
+  .hero-node-6,
+  .hero-node-7 {
+    animation: none !important;
+  }
 }
