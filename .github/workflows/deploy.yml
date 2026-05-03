@@ -178,7 +178,21 @@ jobs:
       - name: Export ALB DNS
         id: tf_outputs
         working-directory: terraform
-        run: echo "alb_dns=$(terraform output -raw alb_dns_name)" >> "$GITHUB_OUTPUT"
+        run: |
+          set -euo pipefail
+          DNS="$(terraform output -json alb_dns_name | jq -r '(if type == "string" then . else .value end) // empty')"
+          DNS="$(printf '%s' "$DNS" | tr -d '\r\n')"
+          if [ -z "$DNS" ] || [ "$DNS" = "null" ]; then
+            echo "FATAL: alb_dns_name is empty after apply"
+            terraform output -json || true
+            exit 1
+          fi
+          {
+            echo "alb_dns<<__ALB_EOF__"
+            printf '%s\n' "$DNS"
+            echo "__ALB_EOF__"
+          } >> "$GITHUB_OUTPUT"
+          echo "Exported ALB DNS for job output (length ${#DNS})"
 
       - name: Download test reports
         uses: actions/download-artifact@v4
@@ -281,9 +295,22 @@ jobs:
 
       - name: Verify /health via Application Load Balancer
         env:
-          ALB_DNS: ${{ needs.terraform.outputs.alb_dns }}
+          ALB_DNS_FROM_TF: ${{ needs.terraform.outputs.alb_dns }}
         run: |
-          test -n "$ALB_DNS" || (echo "Missing ALB DNS output from terraform job" && exit 1)
+          set -euo pipefail
+          trim() { printf '%s' "${1:-}" | tr -d '\r\n'; }
+          ALB_DNS="$(trim "${ALB_DNS_FROM_TF:-}")"
+          if [ -z "$ALB_DNS" ] || [ "$ALB_DNS" = "null" ]; then
+            echo "Terraform job output alb_dns missing (common if you re-ran only failed jobs). Resolving from ELB name prefix ${APP_NAME}-alb- ..."
+            ALB_DNS="$(aws elbv2 describe-load-balancers --region "${AWS_REGION}" --output json \
+              | jq -r --arg p "${APP_NAME}-alb-" '.LoadBalancers[]? | select(.LoadBalancerName | startswith($p)) | .DNSName' \
+              | head -n1)"
+            ALB_DNS="$(trim "$ALB_DNS")"
+          fi
+          if [ -z "$ALB_DNS" ] || [ "$ALB_DNS" = "None" ]; then
+            echo "Could not determine ALB DNS. Check: (1) full workflow run so Terraform export runs, or (2) IAM allows elasticloadbalancing:DescribeLoadBalancers, or (3) ALB exists with name starting ${APP_NAME}-alb-"
+            exit 1
+          fi
           echo "Site URL: http://${ALB_DNS}/"
           for i in $(seq 1 36); do
             if curl -fsS --max-time 15 "http://${ALB_DNS}/health"; then
