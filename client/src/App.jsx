@@ -4,8 +4,8 @@ import { formatInr } from './utils/formatInr';
 
 // Production ECS + ALB: same origin (empty base URL). Local dev: default to backend on 3000.
 const API_URL = import.meta.env.PROD
-  ? (import.meta.env.VITE_API_URL || '')
-  : (import.meta.env.VITE_API_URL || 'http://localhost:3000');
+  ? import.meta.env.VITE_API_URL || ''
+  : import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 function CartIcon({ className = 'w-5 h-5' }) {
   return (
