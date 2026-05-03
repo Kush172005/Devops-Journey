@@ -11,12 +11,7 @@ function LogoMark({ className = 'h-9 w-9' }) {
   return (
     <svg className={className} viewBox="0 0 40 40" fill="none" aria-hidden>
       <rect width="40" height="40" rx="12" fill="currentColor" className="text-orange-700" />
-      <path
-        d="M12 14h16M12 20h10M12 26h14"
-        stroke="white"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
+      <path d="M12 14h16M12 20h10M12 26h14" stroke="white" strokeWidth="2" strokeLinecap="round" />
     </svg>
   );
 }
@@ -70,7 +65,15 @@ function ProductImage({ name, src, className }) {
   );
 }
 
-function CartPanel({ cart, onClose, updateCartQuantity, removeFromCart, getTotalPrice, getTotalItems, onCheckout }) {
+function CartPanel({
+  cart,
+  onClose,
+  updateCartQuantity,
+  removeFromCart,
+  getTotalPrice,
+  getTotalItems,
+  onCheckout,
+}) {
   return (
     <div className="flex h-full min-h-0 flex-col">
       <div className="flex shrink-0 items-center justify-between border-b border-stone-200/80 pb-4">
@@ -91,7 +94,12 @@ function CartPanel({ cart, onClose, updateCartQuantity, removeFromCart, getTotal
             aria-label="Close cart"
           >
             <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         )}
@@ -105,7 +113,8 @@ function CartPanel({ cart, onClose, updateCartQuantity, removeFromCart, getTotal
             </div>
             <p className="font-medium text-stone-800">Nothing staged yet</p>
             <p className="mt-1 max-w-xs text-sm text-stone-500">
-              Like an empty ECR repo before the first push — add something from the grid and it shows up here.
+              Like an empty ECR repo before the first push — add something from the grid and it
+              shows up here.
             </p>
           </div>
         ) : (
@@ -118,7 +127,9 @@ function CartPanel({ cart, onClose, updateCartQuantity, removeFromCart, getTotal
                 <div className="mb-3 flex justify-between gap-2">
                   <div className="min-w-0">
                     <p className="truncate font-medium text-stone-900">{item.name}</p>
-                    <p className="mt-0.5 text-sm font-semibold text-orange-800">{formatInr(item.price)} each</p>
+                    <p className="mt-0.5 text-sm font-semibold text-orange-800">
+                      {formatInr(item.price)} each
+                    </p>
                   </div>
                   <button
                     type="button"
@@ -127,7 +138,12 @@ function CartPanel({ cart, onClose, updateCartQuantity, removeFromCart, getTotal
                     aria-label={`Remove ${item.name}`}
                   >
                     <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
                     </svg>
                   </button>
                 </div>
@@ -140,7 +156,9 @@ function CartPanel({ cart, onClose, updateCartQuantity, removeFromCart, getTotal
                     >
                       −
                     </button>
-                    <span className="min-w-8 text-center text-sm font-semibold text-stone-900">{item.quantity}</span>
+                    <span className="min-w-8 text-center text-sm font-semibold text-stone-900">
+                      {item.quantity}
+                    </span>
                     <button
                       type="button"
                       onClick={() => updateCartQuantity(item.id, item.quantity + 1)}
@@ -149,7 +167,9 @@ function CartPanel({ cart, onClose, updateCartQuantity, removeFromCart, getTotal
                       +
                     </button>
                   </div>
-                  <span className="text-sm font-semibold text-stone-900">{formatInr(item.price * item.quantity)}</span>
+                  <span className="text-sm font-semibold text-stone-900">
+                    {formatInr(item.price * item.quantity)}
+                  </span>
                 </div>
               </li>
             ))}
@@ -161,9 +181,13 @@ function CartPanel({ cart, onClose, updateCartQuantity, removeFromCart, getTotal
         <div className="shrink-0 space-y-4 border-t border-stone-200/80 bg-white/95 px-1 py-5 backdrop-blur-md">
           <div className="flex items-center justify-between text-sm">
             <span className="text-stone-500">Subtotal</span>
-            <span className="text-xl font-semibold tracking-tight text-stone-900">{formatInr(getTotalPrice())}</span>
+            <span className="text-xl font-semibold tracking-tight text-stone-900">
+              {formatInr(getTotalPrice())}
+            </span>
           </div>
-          <p className="text-xs text-stone-500">Shipping &amp; taxes calculated at checkout (demo).</p>
+          <p className="text-xs text-stone-500">
+            Shipping &amp; taxes calculated at checkout (demo).
+          </p>
           <button
             type="button"
             onClick={onCheckout}
@@ -351,8 +375,19 @@ export default function App() {
           <div className="flex flex-1 items-center justify-end gap-2 sm:gap-3">
             <div className="relative hidden max-w-xs flex-1 sm:block">
               <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-stone-400">
-                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M11 18a7 7 0 100-14 7 7 0 000 14z" />
+                <svg
+                  className="h-4 w-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-4.35-4.35M11 18a7 7 0 100-14 7 7 0 000 14z"
+                  />
                 </svg>
               </span>
               <input
@@ -394,8 +429,19 @@ export default function App() {
         <div className="border-t border-stone-100 bg-stone-50/50 px-4 py-2 sm:hidden">
           <div className="relative mx-auto max-w-6xl">
             <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-stone-400">
-              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M11 18a7 7 0 100-14 7 7 0 000 14z" />
+              <svg
+                className="h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-4.35-4.35M11 18a7 7 0 100-14 7 7 0 000 14z"
+                />
               </svg>
             </span>
             <input
@@ -414,13 +460,16 @@ export default function App() {
         <div className="pointer-events-none absolute -bottom-32 -left-24 h-80 w-80 rounded-full bg-orange-600/20 blur-3xl" />
         <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-2 lg:gap-14 lg:px-8 lg:py-24">
           <div className="min-w-0">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-orange-300/90">DevOps lab · storefront branch</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-orange-300/90">
+              DevOps lab · storefront branch
+            </p>
             <h1 className="mt-3 max-w-2xl text-3xl font-semibold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
               Desk gear that survived Terraform plan, Docker build, and a picky ALB.
             </h1>
             <p className="mt-4 max-w-xl text-base leading-relaxed text-stone-300 sm:text-lg">
-              I built this UI because the rubric deserved more than a grey form. Real cart API, INR prices, responsive
-              layout — the boring stuff automated in CI, the fun stuff here on purpose.
+              I built this UI because the rubric deserved more than a grey form. Real cart API, INR
+              prices, responsive layout — the boring stuff automated in CI, the fun stuff here on
+              purpose.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <button
@@ -432,7 +481,9 @@ export default function App() {
               </button>
               <button
                 type="button"
-                onClick={() => document.getElementById('trust')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={() =>
+                  document.getElementById('trust')?.scrollIntoView({ behavior: 'smooth' })
+                }
                 className="rounded-xl border border-white/20 bg-white/5 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/10"
               >
                 Read the stack notes
@@ -447,9 +498,14 @@ export default function App() {
 
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-10 sm:px-6 lg:flex lg:gap-10 lg:px-8 lg:py-12">
         <div className="min-w-0 flex-1">
-          <div id="shop" className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div
+            id="shop"
+            className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
+          >
             <div>
-              <h2 className="text-2xl font-semibold tracking-tight text-stone-900">The shelf (in-memory, honest)</h2>
+              <h2 className="text-2xl font-semibold tracking-tight text-stone-900">
+                The shelf (in-memory, honest)
+              </h2>
               <p className="mt-1 text-sm text-stone-500">
                 {filteredProducts.length} {filteredProducts.length === 1 ? 'piece' : 'pieces'}
                 {category !== 'All' ? ` · ${category}` : ''}
@@ -509,10 +565,16 @@ export default function App() {
                     </button>
                     <div className="flex flex-1 flex-col p-5 sm:p-6">
                       <StarRow />
-                      <h3 className="mt-2 text-lg font-semibold leading-snug text-stone-900">{product.name}</h3>
-                      <p className="mt-1 line-clamp-2 flex-1 text-sm leading-relaxed text-stone-500">{product.description}</p>
+                      <h3 className="mt-2 text-lg font-semibold leading-snug text-stone-900">
+                        {product.name}
+                      </h3>
+                      <p className="mt-1 line-clamp-2 flex-1 text-sm leading-relaxed text-stone-500">
+                        {product.description}
+                      </p>
                       <div className="mt-4 flex items-end justify-between gap-3 border-t border-stone-100 pt-4">
-                        <span className="text-xl font-semibold tracking-tight text-stone-900">{formatInr(product.price)}</span>
+                        <span className="text-xl font-semibold tracking-tight text-stone-900">
+                          {formatInr(product.price)}
+                        </span>
                         <button
                           type="button"
                           onClick={() => addToCart(product)}
@@ -528,10 +590,16 @@ export default function App() {
             </ul>
           )}
 
-          <section id="trust" className="mt-14 rounded-2xl border border-stone-100 bg-white p-6 sm:p-8">
-            <h3 className="text-lg font-semibold text-stone-900">Stack notes (the part markers actually read)</h3>
+          <section
+            id="trust"
+            className="mt-14 rounded-2xl border border-stone-100 bg-white p-6 sm:p-8"
+          >
+            <h3 className="text-lg font-semibold text-stone-900">
+              Stack notes (the part markers actually read)
+            </h3>
             <p className="mt-1 text-sm text-stone-500">
-              Same routes your integration tests hit — I just dressed them up so the deploy screenshot looks intentional.
+              Same routes your integration tests hit — I just dressed them up so the deploy
+              screenshot looks intentional.
             </p>
             <ul className="mt-4 grid gap-4 sm:grid-cols-3">
               {[
@@ -567,7 +635,9 @@ export default function App() {
               getTotalPrice={getTotalPrice}
               getTotalItems={getTotalItems}
               onCheckout={() => {
-                setOrderRef(`lab-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`);
+                setOrderRef(
+                  `lab-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`
+                );
                 setCheckoutOpen(true);
               }}
             />
@@ -578,14 +648,22 @@ export default function App() {
       <footer className="mt-auto border-t border-stone-200/80 bg-white">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-8 text-center text-sm text-stone-500 sm:flex-row sm:text-left sm:px-6 lg:px-8">
           <p>
-            © {new Date().getFullYear()} Atelier · hand-rolled for the DevOps module (not a template dump)
+            © {new Date().getFullYear()} Atelier · hand-rolled for the DevOps module (not a template
+            dump)
           </p>
-          <p className="text-stone-400">INR · product JPEGs ship from /public/products (Unsplash-sourced, bundled)</p>
+          <p className="text-stone-400">
+            INR · product JPEGs ship from /public/products (Unsplash-sourced, bundled)
+          </p>
         </div>
       </footer>
 
       {showCart && (
-        <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-label="Shopping bag">
+        <div
+          className="fixed inset-0 z-50 lg:hidden"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Shopping bag"
+        >
           <button
             type="button"
             className="absolute inset-0 bg-stone-900/45 backdrop-blur-sm"
@@ -603,7 +681,9 @@ export default function App() {
                 getTotalItems={getTotalItems}
                 onCheckout={() => {
                   setShowCart(false);
-                  setOrderRef(`lab-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`);
+                  setOrderRef(
+                    `lab-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`
+                  );
                   setCheckoutOpen(true);
                 }}
               />
@@ -633,21 +713,35 @@ export default function App() {
                 aria-label="Close"
               >
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             </div>
             <div className="max-h-[calc(90vh-12rem)] overflow-y-auto p-6 sm:p-8">
-              <p className="text-xs font-semibold uppercase tracking-wider text-orange-800/80">{selectedProduct.category}</p>
-              <h3 id="product-title" className="mt-1 text-2xl font-semibold tracking-tight text-stone-900">
+              <p className="text-xs font-semibold uppercase tracking-wider text-orange-800/80">
+                {selectedProduct.category}
+              </p>
+              <h3
+                id="product-title"
+                className="mt-1 text-2xl font-semibold tracking-tight text-stone-900"
+              >
                 {selectedProduct.name}
               </h3>
               <div className="mt-2">
                 <StarRow />
               </div>
-              <p className="mt-4 text-sm leading-relaxed text-stone-600">{selectedProduct.description}</p>
+              <p className="mt-4 text-sm leading-relaxed text-stone-600">
+                {selectedProduct.description}
+              </p>
               <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-stone-100 pt-6">
-                <span className="text-2xl font-semibold text-stone-900">{formatInr(selectedProduct.price)}</span>
+                <span className="text-2xl font-semibold text-stone-900">
+                  {formatInr(selectedProduct.price)}
+                </span>
                 <button
                   type="button"
                   onClick={() => addToCart(selectedProduct, { closeDetail: true })}
@@ -662,20 +756,32 @@ export default function App() {
       )}
 
       {checkoutOpen && (
-        <div className="fixed inset-0 z-60 flex items-center justify-center bg-stone-900/50 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Checkout">
+        <div
+          className="fixed inset-0 z-60 flex items-center justify-center bg-stone-900/50 p-4 backdrop-blur-sm"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Checkout"
+        >
           <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl sm:p-8">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-orange-800">Order staged · no payment rail</p>
-                <h3 className="mt-1 text-xl font-semibold text-stone-900 sm:text-2xl">Pipeline green. Wallet untouched.</h3>
+                <p className="text-xs font-semibold uppercase tracking-wider text-orange-800">
+                  Order staged · no payment rail
+                </p>
+                <h3 className="mt-1 text-xl font-semibold text-stone-900 sm:text-2xl">
+                  Pipeline green. Wallet untouched.
+                </h3>
               </div>
-              <span className="shrink-0 rounded-lg bg-emerald-50 px-2 py-1 text-xs font-semibold text-emerald-800">dry-run</span>
+              <span className="shrink-0 rounded-lg bg-emerald-50 px-2 py-1 text-xs font-semibold text-emerald-800">
+                dry-run
+              </span>
             </div>
             <p className="mt-3 font-mono text-xs text-stone-500">ref {orderRef}</p>
             <p className="mt-4 text-sm leading-relaxed text-stone-600">
-              If this were production I would wire Stripe, idempotency keys, and a queue for fulfilment events. Here the
-              assignment is the infrastructure around the app — so checkout is intentionally a no-op, and the cart lives
-              in RAM like your first Redis before you read the persistence chapter.
+              If this were production I would wire Stripe, idempotency keys, and a queue for
+              fulfilment events. Here the assignment is the infrastructure around the app — so
+              checkout is intentionally a no-op, and the cart lives in RAM like your first Redis
+              before you read the persistence chapter.
             </p>
             <ul className="mt-4 space-y-2 text-sm text-stone-700">
               <li className="flex gap-2">
@@ -694,13 +800,21 @@ export default function App() {
                 <span className="text-amber-600" aria-hidden>
                   ○
                 </span>
-                <span>Payment adapter: <code className="rounded bg-stone-100 px-1 font-mono text-xs">null</code> (by design)</span>
+                <span>
+                  Payment adapter:{' '}
+                  <code className="rounded bg-stone-100 px-1 font-mono text-xs">null</code> (by
+                  design)
+                </span>
               </li>
             </ul>
             <div className="mt-5 rounded-xl border border-stone-200 bg-stone-50/80 p-4">
               <p className="text-xs font-medium uppercase tracking-wide text-stone-500">Subtotal</p>
-              <p className="mt-1 text-2xl font-semibold tracking-tight text-stone-900">{formatInr(getTotalPrice())}</p>
-              <p className="mt-2 text-xs text-stone-500">No tax line — your TA has enough math already.</p>
+              <p className="mt-1 text-2xl font-semibold tracking-tight text-stone-900">
+                {formatInr(getTotalPrice())}
+              </p>
+              <p className="mt-2 text-xs text-stone-500">
+                No tax line — your TA has enough math already.
+              </p>
             </div>
             <p className="mt-4 rounded-xl border border-orange-100 bg-orange-50/60 px-4 py-3 text-sm italic leading-relaxed text-stone-800">
               “Nice work on the rollout” — future you, after this deploy stops feeling like magic.

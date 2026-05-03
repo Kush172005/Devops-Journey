@@ -65,71 +65,239 @@ export default function HeroPipelineVisual() {
 
           {/* nodes */}
           <g className="hero-node hero-node-1">
-            <rect x="28" y="58" width="84" height="56" rx="12" stroke="rgba(255,255,255,0.25)" strokeWidth="1.2" fill="rgba(255,255,255,0.06)" />
-            <text x="70" y="88" textAnchor="middle" fill="#e7e5e4" fontSize="11" fontWeight="600" fontFamily="system-ui,sans-serif">
+            <rect
+              x="28"
+              y="58"
+              width="84"
+              height="56"
+              rx="12"
+              stroke="rgba(255,255,255,0.25)"
+              strokeWidth="1.2"
+              fill="rgba(255,255,255,0.06)"
+            />
+            <text
+              x="70"
+              y="88"
+              textAnchor="middle"
+              fill="#e7e5e4"
+              fontSize="11"
+              fontWeight="600"
+              fontFamily="system-ui,sans-serif"
+            >
               git push
             </text>
-            <text x="70" y="106" textAnchor="middle" fill="#a8a29e" fontSize="9" fontFamily="system-ui,sans-serif">
+            <text
+              x="70"
+              y="106"
+              textAnchor="middle"
+              fill="#a8a29e"
+              fontSize="9"
+              fontFamily="system-ui,sans-serif"
+            >
               main
             </text>
           </g>
 
           <g className="hero-node hero-node-2">
-            <rect x="168" y="58" width="84" height="56" rx="12" stroke="rgba(255,255,255,0.25)" strokeWidth="1.2" fill="rgba(255,255,255,0.06)" />
-            <text x="210" y="88" textAnchor="middle" fill="#e7e5e4" fontSize="11" fontWeight="600" fontFamily="system-ui,sans-serif">
+            <rect
+              x="168"
+              y="58"
+              width="84"
+              height="56"
+              rx="12"
+              stroke="rgba(255,255,255,0.25)"
+              strokeWidth="1.2"
+              fill="rgba(255,255,255,0.06)"
+            />
+            <text
+              x="210"
+              y="88"
+              textAnchor="middle"
+              fill="#e7e5e4"
+              fontSize="11"
+              fontWeight="600"
+              fontFamily="system-ui,sans-serif"
+            >
               Actions
             </text>
-            <text x="210" y="106" textAnchor="middle" fill="#a8a29e" fontSize="9" fontFamily="system-ui,sans-serif">
+            <text
+              x="210"
+              y="106"
+              textAnchor="middle"
+              fill="#a8a29e"
+              fontSize="9"
+              fontFamily="system-ui,sans-serif"
+            >
               test → build
             </text>
           </g>
 
           <g className="hero-node hero-node-3">
-            <rect x="168" y="120" width="84" height="56" rx="12" stroke="rgba(251,146,60,0.45)" strokeWidth="1.4" fill="rgba(251,146,60,0.08)" />
-            <text x="210" y="144" textAnchor="middle" fill="#fed7aa" fontSize="11" fontWeight="600" fontFamily="system-ui,sans-serif">
+            <rect
+              x="168"
+              y="120"
+              width="84"
+              height="56"
+              rx="12"
+              stroke="rgba(251,146,60,0.45)"
+              strokeWidth="1.4"
+              fill="rgba(251,146,60,0.08)"
+            />
+            <text
+              x="210"
+              y="144"
+              textAnchor="middle"
+              fill="#fed7aa"
+              fontSize="11"
+              fontWeight="600"
+              fontFamily="system-ui,sans-serif"
+            >
               Docker
             </text>
-            <text x="210" y="162" textAnchor="middle" fill="#fdba74" fontSize="9" fontFamily="system-ui,sans-serif">
+            <text
+              x="210"
+              y="162"
+              textAnchor="middle"
+              fill="#fdba74"
+              fontSize="9"
+              fontFamily="system-ui,sans-serif"
+            >
               push image
             </text>
           </g>
 
           <g className="hero-node hero-node-4">
-            <rect x="308" y="120" width="84" height="56" rx="12" stroke="rgba(255,255,255,0.25)" strokeWidth="1.2" fill="rgba(255,255,255,0.06)" />
-            <text x="350" y="144" textAnchor="middle" fill="#e7e5e4" fontSize="11" fontWeight="600" fontFamily="system-ui,sans-serif">
+            <rect
+              x="308"
+              y="120"
+              width="84"
+              height="56"
+              rx="12"
+              stroke="rgba(255,255,255,0.25)"
+              strokeWidth="1.2"
+              fill="rgba(255,255,255,0.06)"
+            />
+            <text
+              x="350"
+              y="144"
+              textAnchor="middle"
+              fill="#e7e5e4"
+              fontSize="11"
+              fontWeight="600"
+              fontFamily="system-ui,sans-serif"
+            >
               ECR
             </text>
-            <text x="350" y="162" textAnchor="middle" fill="#a8a29e" fontSize="9" fontFamily="system-ui,sans-serif">
+            <text
+              x="350"
+              y="162"
+              textAnchor="middle"
+              fill="#a8a29e"
+              fontSize="9"
+              fontFamily="system-ui,sans-serif"
+            >
               :latest
             </text>
           </g>
 
           <g className="hero-node hero-node-5">
-            <rect x="308" y="182" width="84" height="56" rx="12" stroke="rgba(255,255,255,0.25)" strokeWidth="1.2" fill="rgba(255,255,255,0.06)" />
-            <text x="350" y="204" textAnchor="middle" fill="#e7e5e4" fontSize="11" fontWeight="600" fontFamily="system-ui,sans-serif">
+            <rect
+              x="308"
+              y="182"
+              width="84"
+              height="56"
+              rx="12"
+              stroke="rgba(255,255,255,0.25)"
+              strokeWidth="1.2"
+              fill="rgba(255,255,255,0.06)"
+            />
+            <text
+              x="350"
+              y="204"
+              textAnchor="middle"
+              fill="#e7e5e4"
+              fontSize="11"
+              fontWeight="600"
+              fontFamily="system-ui,sans-serif"
+            >
               ECS
             </text>
-            <text x="350" y="222" textAnchor="middle" fill="#a8a29e" fontSize="9" fontFamily="system-ui,sans-serif">
+            <text
+              x="350"
+              y="222"
+              textAnchor="middle"
+              fill="#a8a29e"
+              fontSize="9"
+              fontFamily="system-ui,sans-serif"
+            >
               Fargate
             </text>
           </g>
 
           <g className="hero-node hero-node-6">
-            <rect x="168" y="182" width="84" height="56" rx="12" stroke="rgba(52,211,153,0.45)" strokeWidth="1.4" fill="rgba(52,211,153,0.07)" />
-            <text x="210" y="204" textAnchor="middle" fill="#a7f3d0" fontSize="11" fontWeight="600" fontFamily="system-ui,sans-serif">
+            <rect
+              x="168"
+              y="182"
+              width="84"
+              height="56"
+              rx="12"
+              stroke="rgba(52,211,153,0.45)"
+              strokeWidth="1.4"
+              fill="rgba(52,211,153,0.07)"
+            />
+            <text
+              x="210"
+              y="204"
+              textAnchor="middle"
+              fill="#a7f3d0"
+              fontSize="11"
+              fontWeight="600"
+              fontFamily="system-ui,sans-serif"
+            >
               ALB
             </text>
-            <text x="210" y="222" textAnchor="middle" fill="#6ee7b7" fontSize="9" fontFamily="system-ui,sans-serif">
+            <text
+              x="210"
+              y="222"
+              textAnchor="middle"
+              fill="#6ee7b7"
+              fontSize="9"
+              fontFamily="system-ui,sans-serif"
+            >
               /health ✓
             </text>
           </g>
 
           <g className="hero-node hero-node-7">
-            <rect x="28" y="182" width="84" height="56" rx="12" stroke="rgba(251,146,60,0.5)" strokeWidth="1.5" fill="rgba(251,146,60,0.1)" />
-            <text x="70" y="204" textAnchor="middle" fill="#ffedd5" fontSize="11" fontWeight="600" fontFamily="system-ui,sans-serif">
+            <rect
+              x="28"
+              y="182"
+              width="84"
+              height="56"
+              rx="12"
+              stroke="rgba(251,146,60,0.5)"
+              strokeWidth="1.5"
+              fill="rgba(251,146,60,0.1)"
+            />
+            <text
+              x="70"
+              y="204"
+              textAnchor="middle"
+              fill="#ffedd5"
+              fontSize="11"
+              fontWeight="600"
+              fontFamily="system-ui,sans-serif"
+            >
               Store
             </text>
-            <text x="70" y="222" textAnchor="middle" fill="#fdba74" fontSize="9" fontFamily="system-ui,sans-serif">
+            <text
+              x="70"
+              y="222"
+              textAnchor="middle"
+              fill="#fdba74"
+              fontSize="9"
+              fontFamily="system-ui,sans-serif"
+            >
               you are here
             </text>
           </g>
