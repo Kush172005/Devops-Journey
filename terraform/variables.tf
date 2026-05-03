@@ -26,6 +26,17 @@ variable "subnet_id" {
   }
 }
 
+variable "subnet_id_2" {
+  description = "Optional second public subnet in a different AZ (required if VPC auto-discovery cannot find one). Used for ALB."
+  type        = string
+  default     = ""
+
+  validation {
+    condition     = var.subnet_id_2 == "" || can(regex("^subnet-[a-z0-9]+$", var.subnet_id_2))
+    error_message = "subnet_id_2 must be empty or look like subnet-xxxxxxxx."
+  }
+}
+
 variable "security_group_id" {
   description = "Security group ID for ECS tasks (must allow inbound TCP on container_port)"
   type        = string

@@ -30,6 +30,124 @@ resource "random_id" "bucket_suffix" {
   byte_length = 3
 }
 
+data "aws_subnet" "ecs" {
+  id = var.subnet_id
+}
+
+data "aws_subnets" "in_vpc" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_subnet.ecs.vpc_id]
+  }
+}
+
+locals {
+  vpc_subnet_lookup_ids = slice(sort(data.aws_subnets.in_vpc.ids), 0, min(32, length(data.aws_subnets.in_vpc.ids)))
+}
+
+data "aws_subnet" "vpc_lookup" {
+  for_each = toset(local.vpc_subnet_lookup_ids)
+  id       = each.value
+}
+
+locals {
+  ecs_az = data.aws_subnet.ecs.availability_zone
+  alternate_subnet_ids = [
+    for sid in local.vpc_subnet_lookup_ids : sid
+    if data.aws_subnet.vpc_lookup[sid].availability_zone != local.ecs_az
+  ]
+  alb_subnet_b = trimspace(var.subnet_id_2) != "" ? var.subnet_id_2 : (
+    length(local.alternate_subnet_ids) > 0 ? local.alternate_subnet_ids[0] : var.subnet_id
+  )
+  alb_subnet_ids = distinct([var.subnet_id, local.alb_subnet_b])
+}
+
+resource "aws_security_group" "alb" {
+  name_prefix = "${var.app_name}-alb-"
+  description = "HTTP from internet to ALB"
+  vpc_id      = data.aws_subnet.ecs.vpc_id
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "${var.app_name}-alb-sg"
+  }
+}
+
+resource "aws_security_group_rule" "ecs_tasks_from_alb" {
+  type                     = "ingress"
+  from_port                = var.container_port
+  to_port                  = var.container_port
+  protocol                 = "tcp"
+  security_group_id        = var.security_group_id
+  source_security_group_id = aws_security_group.alb.id
+  description              = "Allow ALB to reach ECS tasks"
+}
+
+resource "aws_lb" "app" {
+  name               = substr("${var.app_name}-alb-${random_id.bucket_suffix.hex}", 0, 32)
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.alb.id]
+  subnets            = local.alb_subnet_ids
+
+  tags = {
+    Name = "${var.app_name}-alb"
+  }
+
+  lifecycle {
+    precondition {
+      condition     = local.alb_subnet_b != var.subnet_id
+      error_message = "ALB needs 2 subnets in different Availability Zones. Add GitHub secret AWS_SUBNET_ID_2 with a public subnet in another AZ (different from AWS_SUBNET_ID), or use a VPC that has another subnet in a different AZ."
+    }
+  }
+}
+
+resource "aws_lb_target_group" "app" {
+  name        = substr("${var.app_name}-tg-${random_id.bucket_suffix.hex}", 0, 32)
+  port        = var.container_port
+  protocol    = "HTTP"
+  vpc_id      = data.aws_subnet.ecs.vpc_id
+  target_type = "ip"
+
+  health_check {
+    enabled             = true
+    path                = "/health"
+    healthy_threshold   = 2
+    unhealthy_threshold = 3
+    timeout             = 5
+    interval            = 30
+    matcher             = "200"
+  }
+
+  tags = {
+    Name = "${var.app_name}-tg"
+  }
+}
+
+resource "aws_lb_listener" "http" {
+  load_balancer_arn = aws_lb.app.arn
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.app.arn
+  }
+}
+
 # Rubric: S3 with unique name, versioning, encryption, public access blocked.
 resource "aws_s3_bucket" "reports" {
   bucket = "${var.app_name}-data-${random_id.bucket_suffix.hex}"
@@ -147,13 +265,22 @@ resource "aws_ecs_service" "app" {
   desired_count   = var.desired_count
   launch_type     = "FARGATE"
 
-  force_new_deployment = true
+  force_new_deployment              = true
+  health_check_grace_period_seconds = 120
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.app.arn
+    container_name   = var.app_name
+    container_port   = var.container_port
+  }
 
   network_configuration {
     subnets          = [var.subnet_id]
     security_groups  = [var.security_group_id]
     assign_public_ip = true
   }
+
+  depends_on = [aws_lb_listener.http]
 
   tags = {
     Name        = "${var.app_name}-service"
@@ -179,4 +306,9 @@ output "ecs_cluster_name" {
 output "ecs_service_name" {
   description = "ECS service name"
   value       = aws_ecs_service.app.name
+}
+
+output "alb_dns_name" {
+  description = "Public Application Load Balancer DNS (use this URL in browser)"
+  value       = aws_lb.app.dns_name
 }
