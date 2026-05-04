@@ -50,11 +50,13 @@ a:focus-visible {
 }
 
 @keyframes hero-orb-float {
+
   0%,
   100% {
     transform: translate(0, 0) scale(1);
     opacity: 0.5;
   }
+
   50% {
     transform: translate(-6px, -10px) scale(1.08);
     opacity: 0.85;
@@ -62,10 +64,12 @@ a:focus-visible {
 }
 
 @keyframes hero-node-glow {
+
   0%,
   100% {
     opacity: 0.72;
   }
+
   50% {
     opacity: 1;
   }
@@ -91,32 +95,39 @@ a:focus-visible {
   animation: hero-node-glow 2.8s ease-in-out infinite;
   animation-delay: 0s;
 }
+
 .hero-node-2 {
   animation: hero-node-glow 2.8s ease-in-out infinite;
   animation-delay: 0.35s;
 }
+
 .hero-node-3 {
   animation: hero-node-glow 2.8s ease-in-out infinite;
   animation-delay: 0.7s;
 }
+
 .hero-node-4 {
   animation: hero-node-glow 2.8s ease-in-out infinite;
   animation-delay: 1.05s;
 }
+
 .hero-node-5 {
   animation: hero-node-glow 2.8s ease-in-out infinite;
   animation-delay: 1.4s;
 }
+
 .hero-node-6 {
   animation: hero-node-glow 2.8s ease-in-out infinite;
   animation-delay: 1.75s;
 }
+
 .hero-node-7 {
   animation: hero-node-glow 2.8s ease-in-out infinite;
   animation-delay: 2.1s;
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .hero-pipeline-dash,
   .hero-pipeline-dash-delay,
   .hero-orb-a,
