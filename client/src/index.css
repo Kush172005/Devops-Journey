@@ -50,7 +50,6 @@ a:focus-visible {
 }
 
 @keyframes hero-orb-float {
-
   0%,
   100% {
     transform: translate(0, 0) scale(1);
@@ -64,7 +63,6 @@ a:focus-visible {
 }
 
 @keyframes hero-node-glow {
-
   0%,
   100% {
     opacity: 0.72;
@@ -127,7 +125,6 @@ a:focus-visible {
 }
 
 @media (prefers-reduced-motion: reduce) {
-
   .hero-pipeline-dash,
   .hero-pipeline-dash-delay,
   .hero-orb-a,
